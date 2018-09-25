@@ -74,6 +74,7 @@ begin
   -- stimuli
   PSTIM: process
     variable v_duration : integer;
+    --
   begin
     -- initialisation
     reset <= '0';
