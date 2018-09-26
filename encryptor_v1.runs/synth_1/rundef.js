@@ -23,7 +23,7 @@ eval( EAInclude(ISEJScriptLib) );
 
 
 ISEStep( "vivado",
-         "-log Keyscheduler.vds -m64 -product Vivado -mode batch -messageDb vivado.pb -notrace -source Keyscheduler.tcl" );
+         "-log AES128_tb.vds -m64 -product Vivado -mode batch -messageDb vivado.pb -notrace -source AES128_tb.tcl" );
 
 
 

@@ -40,4 +40,4 @@ EAStep()
      fi
 }
 
-EAStep vivado -log Keyscheduler.vds -m64 -product Vivado -mode batch -messageDb vivado.pb -notrace -source Keyscheduler.tcl
+EAStep vivado -log AES128_tb.vds -m64 -product Vivado -mode batch -messageDb vivado.pb -notrace -source AES128_tb.tcl

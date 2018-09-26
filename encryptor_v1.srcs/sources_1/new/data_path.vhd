@@ -36,84 +36,86 @@ entity data_path is
            reset : in STD_LOGIC;
            data_in : in STD_LOGIC_VECTOR (127 downto 0);
            ce: in STD_LOGIC;
-          
+          multiplex_state: in STD_LOGIC;
            data_out : out STD_LOGIC_VECTOR (127 downto 0);
+           round_counter: in STD_LOGIC_VECTOR(3 downto 0);
            key_in : in STD_LOGIC_VECTOR (127 downto 0));
            
 end data_path;
 
 architecture Behavioral of data_path is
 
-signal data1, data2,data3,data4,data_mul : std_logic_vector(127 to 0);
-signal key_ex :  STD_LOGIC_VECTOR (127 downto 0);
 
-component Exor is 
-    Port ( exor_in : in STD_LOGIC_VECTOR (127 downto 0);
-           key_in : in STD_LOGIC_VECTOR (127 downto 0);
-           exor_out : out STD_LOGIC_VECTOR (127 downto 0));
+signal key_ex ,data_round_in :  STD_LOGIC_VECTOR (127 downto 0);
+
+signal data_after_round1, data_after_round2, data_after_round3 ,data_after_round4 ,data_after_round5, :STD_LOGIC_VECTOR (127 downto 0);
+signal data_after_round6, data_after_round7 ,data_after_round8, data_after_round9, data_after_round10, :STD_LOGIC_VECTOR (127 downto 0);
+
+component round is
+    Port ( round_in : in STD_LOGIC_VECTOR (127 downto 0);
+           key_in: in STD_LOGIC_VECTOR (127 downto 0);
+           enable: in STD_LOGIC;
+           reset: in STD_LOGIC;
+            clock : in STD_LOGIC;
+           round_out : out STD_LOGIC_VECTOR (127 downto 0));
 end component;
 
-component ByteSub is
-   port( BS_in :in std_logic_vector( 7 downto 0 );
-         BS_out :out std_logic_vector( 7 downto 0 )
-);
+component round_last is
+      Port ( last_round_in : in STD_LOGIC_VECTOR (127 downto 0);
+           key_in: in STD_LOGIC_VECTOR (127 downto 0);
+           enable: in STD_LOGIC;
+           reset: in STD_LOGIC;
+            clock : in STD_LOGIC;
+           last_round_out : out STD_LOGIC_VECTOR (127 downto 0));
 end component;
 
-component ShiftRow is 
-  port (  shiftrow_in : in std_logic_vector(127 downto 0);
-          shiftrow_out : out std_logic_vector(127 downto 0));
-end component;
-
-
-component MixColumn is 
-	port (	MC_in : in std_logic_vector (127 downto 0);
-			MC_out : out std_logic_vector(127 downto 0)
-			);
-end component;
-
-component Keyscheduler is 
-	port( roundcounter:	 	in STD_LOGIC_VECTOR(3 downto 0);
-			clock:            in std_logic; 
-			reset:            in std_logic;
-			ce:            in std_logic;
-			key:    	 			in std_logic_vector(127 downto 0);
-			key_out:				out std_logic_vector(127 downto 0)
-	);
-end component;
-
-
-component control_p is
-    Port ( 
-    reset : in STD_LOGIC;
-        clock : in STD_LOGIC;
-        timers : in STD_LOGIC_VECTOR(2 downto 0);
-        
-        multiplex_state: out STD_LOGIC;
-        done: out STD_LOGIC;
-        ce: in STD_LOGIC
-       );
-end component;
 
 begin
+  
+  data_doorvoer: process (clock)
+      begin
+           if rising_edge(clock)and multiplex_state = '1' then 
+                 data_round_in <= data_after_round;
+               elsif rising_edge(clock)and multiplex_state = '0' then
+                 data_round_in <= data_in;
+               else
+               end if;
+  end process;
+  
+Rd1: round port map (data_in, key_in, ce, reset, clock, data_after_round1);
+Rd2: round port map (data_after_round1, key_in, ce, reset, clock, data_after_round2);
+Rd3: round port map (data_after_round2, key_in, ce, reset, clock, data_after_round3);
 
-EX1: Exor port map( exor_in => data_mul, key_in => key_ex, exor_out => data1);
-BS: Bytesub port map (BS_in => data1, BS_out => data2);
-SR: ShiftRow port map (shiftrow_in => data2, shiftrow_out => data3);
-MC: mixColumn port map(MC_in => data3, MC_out => data4);
-KS: Keyscheduler port map ( roundcounter => data1, clock => clock, reset => reset, ce => ce, key => key_in, key_out => key_ex);
+Rd4: round port map (data_after_round3, key_in, ce, reset, clock, data_after_round4);
+Rd5: round port map (data_after_round4, key_in, ce, reset, clock, data_after_round5);
+Rd6: round port map (data_after_round5, key_in, ce, reset, clock, data_after_round6);
 
-process (rising_edge(clock),multiplex_state)
-    begin
-         if rising_edge(clock) and multiplex_state = '0' then 
-               data_mul = data_in;
-             else
-               data_mul = data4;
-             end if;
-    end process
+Rd7: round port map (data_after_round6, key_in, ce, reset, clock, data_after_round7);
+Rd8: round port map (data_after_round7, key_in, ce, reset, clock, data_after_round8);
+Rd9: round port map (data_after_round8, key_in, ce, reset, clock, data_after_round9);
 
---roundcounter => data1 NOG AANPASSEN!
-        
+RL: round_last port map (data_after_round9, key_in, ce, reset, clock, data_out);
 
+
+
+  
+--  FSM_switchstate: process (clock)
+--    begin
+--           if rising_edge(clock) and round_counter > "0000" and round_counter < "1010" then 
+          
+--           Rd: round port map ( round_in => data_round_in,
+--                                                  key_in => key_in ,
+--                                                  enable => ce,
+--                                                  reset => reset,
+--                                                   clock => clock ,
+--                                                  round_out => data_after_round);
+              
+                   
+--        else
+--          data_out <= data_in;
+--        end if;
+--    end process;
+  
 
 
 end Behavioral;

@@ -33,21 +33,20 @@ use IEEE.STD_LOGIC_1164.ALL;
 
 entity control_p is
     Port ( 
-    reset : in STD_LOGIC;
+        reset : in STD_LOGIC;
         clock : in STD_LOGIC;
-        
-        
         multiplex_state: out STD_LOGIC;
         done: out STD_LOGIC;
-        ce: in STD_LOGIC
+        ce: in STD_LOGIC;
+         roundcounter_out: out STD_LOGIC_VECTOR(3 downto 0)
        );
 end control_p;
 
 architecture Behavioral of control_p is
 
-  type tStates is (idle, round1 , round2 , round3 , round4 , round5 , round6 , round7 , round8 , round9 , round10, after_encrypt);
+  type tStates is (idle, round_till_nine, round_last, after_encrypt);
   signal curState, nxtState : tStates;
-
+  signal roundcounter: STD_LOGIC_VECTOR(3 downto 0);  
   signal timer0, timer1, timer2 : STD_LOGIC;
 
 
@@ -58,6 +57,7 @@ begin
   begin
     if reset = '1' then 
       curState <= idle;
+      roundcounter <= "0000";
     elsif rising_edge(clock)and ce = '1' then 
       curState <= nxtState; 
     end if;
@@ -72,80 +72,29 @@ FSM_nextstate : process (curState, clock )
       
         when idle =>
           if rising_edge(clock) and ce = '1' then 
-            nxtState <= round1;
+            nxtState <= round_till_nine;
           else
             nxtState <= idle;
           end if;
   
-        when round1 =>
-          if rising_edge(clock) then 
-            nxtState <= round2;
-          else
-            nxtState <= round1;
-          end if;
-          
-        when round2 =>
-            if rising_edge(clock) then 
-              nxtState <= round3;
+              
+        when round_till_nine =>
+            if rising_edge(clock) and roundcounter = "1001" then 
+              nxtState <= round_last;
+            elsif rising_edge(clock) and roundcounter < "1001" then
+             nxtState <= round_till_nine;
+             roundcounter <= roundcounter and "0001";
             else
-              nxtState <= round2;
+              nxtState <= round_till_nine;
             end if;
             
-      when round3 =>
-          if rising_edge(clock) then 
-            nxtState <= round4;
-          else
-            nxtState <= round3;
-          end if;
-       
-         when round4 =>
-            if rising_edge(clock) then 
-              nxtState <= round5;
-            else
-              nxtState <= round4;
-            end if;
-                
-          when round5 =>
-              if rising_edge(clock) then 
-                nxtState <= round6;
-              else
-                nxtState <= round5;
-              end if;
-                  
-            when round6 =>
-                if rising_edge(clock) then 
-                  nxtState <= round7;
-                else
-                  nxtState <= round6;
-                end if;
-              
-              
-            when round7 =>
-              if rising_edge(clock) then 
-                nxtState <= round8;
-              else
-                nxtState <= round7;
-              end if;      
-                  
-          when round8 =>
-                if rising_edge(clock) then 
-                  nxtState <= round9;
-                else
-                  nxtState <= round8;
-                end if;
-                        
-          when round9 =>
-              if rising_edge(clock) then 
-                    nxtState <= round10;
-                  else
-                    nxtState <= round9;
-                  end if;
-                          
-          when round10 =>
+   
+          when round_last =>
             if rising_edge(clock) then 
                 nxtState <= after_encrypt ;
+                roundcounter <= "1010";
             else
-                  nxtState <= round10;
+                  nxtState <= after_encrypt;
             end if;
       
       when after_encrypt =>
@@ -153,6 +102,7 @@ FSM_nextstate : process (curState, clock )
               nxtState <=  idle;
           else
                 nxtState <= after_encrypt;
+                roundcounter <= "1011";
           end if;
          
       when others =>
@@ -167,21 +117,11 @@ FSM_nextstate : process (curState, clock )
   FSM_output : process (curState)
     begin
       case curState is
-        when after_encrypt => done <= '1'; multiplex_state <= '0';
+      
+        when after_encrypt => roundcounter_out <= roundcounter; done <= '1'; multiplex_state <= '1';
+        when round_till_nine => roundcounter_out <= roundcounter; done <= '0';  multiplex_state <= '1';
+        when others => roundcounter_out <= roundcounter; done <= '0'; multiplex_state <= '0'; 
         
-        when round1 => multiplex_state <= '1'; done <= '0';
-        when round2 => multiplex_state <= '1'; done <= '0';
-        when round3 => multiplex_state <= '1'; done <= '0';
-        when round4 => multiplex_state <= '1'; done <= '0';
-        when round5 => multiplex_state <= '1'; done <= '0';
-        when round6 => multiplex_state <= '1'; done <= '0';
-        when round7 => multiplex_state <= '1'; done <= '0';
-        when round8 => multiplex_state <= '1'; done <= '0';
-        when round9 => multiplex_state <= '1'; done <= '0';
-        when round10 => multiplex_state <= '1'; done <= '0';
-        
-        
-        when others => done <= '0'; multiplex_state <= '0'; 
       end case;
     end process;
   
