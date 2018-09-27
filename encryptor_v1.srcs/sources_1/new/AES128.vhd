@@ -44,14 +44,14 @@ end AES128;
 architecture Behavioral of AES128 is
 
 signal round_counter: STD_LOGIC_VECTOR(3 downto 0);
-signal  multiplex_state: STD_LOGIC;
+signal  multiplex_state: STD_LOGIC_VECTOR(1 downto 0);
 
 component data_path is
     Port ( clock : in STD_LOGIC;
            reset : in STD_LOGIC;
            data_in : in STD_LOGIC_VECTOR (127 downto 0);
            ce: in STD_LOGIC;
-                    multiplex_state: in STD_LOGIC;
+           multiplex_state: in STD_LOGIC_VECTOR(1 downto 0);
            data_out : out STD_LOGIC_VECTOR (127 downto 0);
            round_counter: out STD_LOGIC_VECTOR(3 downto 0);
            key_in : in STD_LOGIC_VECTOR (127 downto 0));
@@ -62,7 +62,7 @@ component control_p is
     Port ( 
         reset : in STD_LOGIC;
         clock : in STD_LOGIC;
-        multiplex_state: out STD_LOGIC;
+        multiplex_state: out STD_LOGIC_VECTOR(1 downto 0);
         done: out STD_LOGIC;
         ce: in STD_LOGIC;
          roundcounter_out: out STD_LOGIC_VECTOR(3 downto 0)
