@@ -58,7 +58,7 @@ FSM_switchstate : process (reset, clock)
   begin
     if reset = '1' then 
       curState <= idle;
-      roundcounter <= "0000";
+      
     elsif rising_edge(clock) then 
       curState <= nxtState; 
     end if;
@@ -78,10 +78,9 @@ FSM_nextstate : process (curState )
             end if;
 
         when first_round =>
-           
              if  roundcounter < 10 then
-                    nxtState <= round_till_nine;
-                    roundcounter <= roundcounter + 1;
+               nxtState <= round_till_nine;
+               roundcounter <= roundcounter + 1;
              else
                nxtState <= first_round;
              end if;
@@ -96,14 +95,6 @@ FSM_nextstate : process (curState )
                nxtState <= round_till_nine;
              end if;
   
-        when round_last =>
-            
-                nxtState <= after_encrypt ;
-                roundcounter <= "1010";
-           
-            
-      
-      
       when after_encrypt =>
           if  ce = '0' then 
               nxtState <=  idle;
@@ -137,11 +128,7 @@ FSM_nextstate : process (curState )
            
             done <= '0';
             multiplex_state <= "10";
-            
-        when round_last =>
-             
-                done <= '0';
-                multiplex_state <= "11"; 
+           
                 
         when after_encrypt => 
                             

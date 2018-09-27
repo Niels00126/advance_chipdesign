@@ -48,7 +48,7 @@ signal data1, data2,data3,key_ex : std_logic_vector(127 to 0);
 
 component Exor is 
     Port ( exor_in : in STD_LOGIC_VECTOR (127 downto 0);
-           key_in : in STD_LOGIC_VECTOR (127 downto 0);
+           key_in :  in STD_LOGIC_VECTOR (127 downto 0);
 
            exor_out : out STD_LOGIC_VECTOR (127 downto 0));
 end component;
@@ -72,12 +72,13 @@ component MixColumn is
 end component;
 
 component Keyscheduler is 
-	port( roundcounter:	 	in STD_LOGIC_VECTOR(3 downto 0);
-			clock:            in std_logic; 
-			reset:            in std_logic;
+	port( roundcounter:	   in STD_LOGIC_VECTOR(3 downto 0);
+			clock:         in std_logic; 
+			reset:         in std_logic;
 			ce:            in std_logic;
-			key:    	 			in std_logic_vector(127 downto 0);
-			key_out:				out std_logic_vector(127 downto 0)
+			key:    	   in std_logic_vector(127 downto 0);
+			
+			key_out:	   out std_logic_vector(127 downto 0)
 	);
 end component;
 

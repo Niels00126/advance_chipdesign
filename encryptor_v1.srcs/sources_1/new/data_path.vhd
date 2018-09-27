@@ -52,13 +52,13 @@ signal data_after_round,data_round_tussen :STD_LOGIC_VECTOR (127 downto 0);
 signal multiplex_state2: STD_LOGIC_VECTOR(1 downto 0);
 
 component round is
-    Port ( round_in : in STD_LOGIC_VECTOR (127 downto 0);
-           key_in: in STD_LOGIC_VECTOR (127 downto 0);
-           enable: in STD_LOGIC;
-           reset: in STD_LOGIC;
-            clock : in STD_LOGIC;
-            round_counter: in STD_LOGIC_VECTOR (3 downto 0);
-             round_tussen: out STD_LOGIC_VECTOR (127 downto 0); 
+    Port ( round_in :       in STD_LOGIC_VECTOR (127 downto 0);
+           key_in:          in STD_LOGIC_VECTOR (127 downto 0);
+           enable:          in STD_LOGIC;
+           reset:           in STD_LOGIC;
+            clock :         in STD_LOGIC;
+            round_counter:  in STD_LOGIC_VECTOR (3 downto 0);
+             round_tussen:      out STD_LOGIC_VECTOR (127 downto 0); 
            round_out : out STD_LOGIC_VECTOR (127 downto 0));
 end component;
 
@@ -68,10 +68,10 @@ begin
   
   data_doorvoer: process (multiplex_state,data_after_round,data_in)
       begin
-           if  multiplex_state = "01" then 
-                 data_round_in <= data_after_round;
-               elsif  multiplex_state = "00" then
+           if  multiplex_state = "00" then 
                  data_round_in <= data_in;
+               elsif  multiplex_state = "01" then
+                 data_round_in <= data_after_round;
                elsif  multiplex_state = "11" then   
                  data_out <= data_round_tussen;
                else
