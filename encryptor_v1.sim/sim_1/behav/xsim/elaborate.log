@@ -1,0 +1,7 @@
+Vivado Simulator 2018.2
+Copyright 1986-1999, 2001-2018 Xilinx, Inc. All Rights Reserved.
+Running: F:/Xilinx/Vivado/2018.2/bin/unwrapped/win64.o/xelab.exe -wto 0a415bd9062e48dbb6b167227d6acd56 --incr --debug typical --relax --mt 2 -L xil_defaultlib -L secureip --snapshot AES128_tb_behav xil_defaultlib.AES128_tb -log elaborate.log 
+Using 2 slave threads.
+Starting static elaboration
+ERROR: [VRFC 10-665] expression has 0 elements ; formal roundcounter expects 4 [C:/Users/11401165/OneDrive/Documenten/School/2018-2019/chipontwerp/encryptor_v1/encryptor_v1.srcs/sources_1/new/round.vhd:86]
+ERROR: [XSIM 43-3321] Static elaboration of top level VHDL design unit aes128_tb in library work failed.

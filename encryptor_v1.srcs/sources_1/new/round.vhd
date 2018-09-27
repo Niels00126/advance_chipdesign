@@ -37,6 +37,8 @@ entity round is
            enable: in STD_LOGIC;
            reset: in STD_LOGIC;
             clock : in STD_LOGIC;
+            round_counter: in STD_LOGIC_VECTOR (3 downto 0);
+           round_tussen: out STD_LOGIC_VECTOR (127 downto 0); 
            round_out : out STD_LOGIC_VECTOR (127 downto 0));
 end round;
 
@@ -82,13 +84,13 @@ end component;
 
 begin
 
-KS: Keyscheduler port map ( roundcounter => data1, clock => clock, reset => reset, ce => enable, key => key_in, key_out => key_ex);
+KS: Keyscheduler port map ( roundcounter => round_counter, clock => clock, reset => reset, ce => enable, key => key_in, key_out => key_ex);
 EX1: Exor port map( exor_in => round_in, key_in => key_ex, exor_out => data1);
 BS: Bytesub port map (BS_in => data1, BS_out => data2);
 SR: ShiftRow port map (shiftrow_in => data2, shiftrow_out => data3);
 MC: mixColumn port map(MC_in => data3, MC_out => round_out);
 
-
+ round_tussen <= data3;
 
 
 end Behavioral;

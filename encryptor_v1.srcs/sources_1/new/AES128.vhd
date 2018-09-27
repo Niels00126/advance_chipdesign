@@ -32,14 +32,19 @@ use IEEE.STD_LOGIC_1164.ALL;
 --use UNISIM.VComponents.all;
 
 entity AES128 is
-    Port ( data_in_tb : in STD_LOGIC_VECTOR (127 downto 0);
-           data_out_tb : out STD_LOGIC_VECTOR (127 downto 0);
+    Port ( data_in : in STD_LOGIC_VECTOR (127 downto 0);
+           data_out : out STD_LOGIC_VECTOR (127 downto 0);
            clock : in STD_LOGIC;
            reset : in STD_LOGIC;
            ce : in STD_LOGIC;
-           key_in_tb : in STD_LOGIC_VECTOR (127 downto 0);
+           key : in STD_LOGIC_VECTOR (127 downto 0);
            done : out STD_LOGIC);
 end AES128;
+
+
+
+
+  
 
 architecture Behavioral of AES128 is
 
@@ -53,7 +58,7 @@ component data_path is
            ce: in STD_LOGIC;
            multiplex_state: in STD_LOGIC_VECTOR(1 downto 0);
            data_out : out STD_LOGIC_VECTOR (127 downto 0);
-           round_counter: out STD_LOGIC_VECTOR(3 downto 0);
+           round_counter: in STD_LOGIC_VECTOR(3 downto 0);
            key_in : in STD_LOGIC_VECTOR (127 downto 0));
            
 end component;
@@ -74,12 +79,13 @@ begin
 
 DP: data_path Port map ( clock => clock,
                           reset => reset, 
-                          data_in => data_in_tb, 
+                          data_in => data_in, 
                           ce => ce, 
-                          data_out => data_out_tb, 
-                          key_in => key_in_tb,
                           multiplex_state => multiplex_state,
-                          round_counter => round_counter);
+                          data_out => data_out,
+                          round_counter => round_counter,
+                           key_in => key
+                          );
                           
 CP: control_p Port map( reset => reset,
                         clock => clock,

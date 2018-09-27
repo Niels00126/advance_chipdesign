@@ -48,7 +48,7 @@ architecture Behavioral of data_path is
 
 signal key_ex ,data_round_in :  STD_LOGIC_VECTOR (127 downto 0);
 
-signal data_after_round :STD_LOGIC_VECTOR (127 downto 0);
+signal data_after_round,data_round_tussen :STD_LOGIC_VECTOR (127 downto 0);
 signal multiplex_state2: STD_LOGIC_VECTOR(1 downto 0);
 
 component round is
@@ -57,27 +57,23 @@ component round is
            enable: in STD_LOGIC;
            reset: in STD_LOGIC;
             clock : in STD_LOGIC;
+            round_counter: in STD_LOGIC_VECTOR (3 downto 0);
+             round_tussen: out STD_LOGIC_VECTOR (127 downto 0); 
            round_out : out STD_LOGIC_VECTOR (127 downto 0));
 end component;
 
-component round_last is
-      Port ( last_round_in : in STD_LOGIC_VECTOR (127 downto 0);
-           key_in: in STD_LOGIC_VECTOR (127 downto 0);
-           enable: in STD_LOGIC;
-           reset: in STD_LOGIC;
-            clock : in STD_LOGIC;
-           last_round_out : out STD_LOGIC_VECTOR (127 downto 0));
-end component;
 
 
 begin
   
-  data_doorvoer: process (clock)
+  data_doorvoer: process (multiplex_state,data_after_round,data_in)
       begin
-           if rising_edge(clock)and multiplex_state = "01" then 
+           if  multiplex_state = "01" then 
                  data_round_in <= data_after_round;
-               elsif rising_edge(clock)and multiplex_state = "00" then
+               elsif  multiplex_state = "00" then
                  data_round_in <= data_in;
+               elsif  multiplex_state = "11" then   
+                 data_out <= data_round_tussen;
                else
                end if;
       end process;
@@ -85,48 +81,12 @@ begin
   --Rd1: round port map (data_round_in, key_in, ce, reset, clock, data_after_round);
     --RL: round_last port map (data_round_in, key_in, ce, reset, clock, data_out);
 
-multiplex_state2 <= multiplex_state;
+ Rd1: round port map (data_round_in, key_in, ce, reset, clock,round_counter,data_round_tussen, data_after_round);
+ 
 
+ 
 
-case multiplex_state is
-     
-        when "00"  =>
-        
-        when "01"  =>
-        
-        Rd1: round port map (data_in, key_in, ce, reset, clock, data_after_round);
-        
-        when "10"  =>
-        
-      --  Rd2: round port map (data_after_round, key_in, ce, reset, clock, data_after_round);
-        
-        when "11"  =>
-        
-        RL: round_last port map (data_round_in, key_in, ce, reset, clock, data_out);
-             
-        when others =>
            
-        
-      end case;
-
-  
---  FSM_switchstate: process (clock)
---    begin
---           if rising_edge(clock) and round_counter > "0000" and round_counter < "1010" then 
-          
---           Rd: round port map ( round_in => data_round_in,
---                                                  key_in => key_in ,
---                                                  enable => ce,
---                                                  reset => reset,
---                                                   clock => clock ,
---                                                  round_out => data_after_round);
-              
-                   
---        else
---          data_out <= data_in;
---        end if;
---    end process;
-  
-
+   
 
 end Behavioral;

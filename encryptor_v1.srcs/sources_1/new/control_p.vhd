@@ -67,7 +67,7 @@ FSM_switchstate : process (reset, clock)
 
 
 
-FSM_nextstate : process (curState, clock )
+FSM_nextstate : process (curState )
   begin
   case curState is
      
@@ -79,7 +79,7 @@ FSM_nextstate : process (curState, clock )
 
         when first_round =>
            
-             if rising_edge(clock) and roundcounter < 10 then
+             if  roundcounter < 10 then
                     nxtState <= round_till_nine;
                     roundcounter <= roundcounter + 1;
              else
@@ -87,9 +87,9 @@ FSM_nextstate : process (curState, clock )
              end if;
                      
         when round_till_nine =>
-             if rising_edge(clock) and roundcounter = 9 then 
-                    nxtState <= round_last;
-             elsif rising_edge(clock) and roundcounter < 10 then
+             if roundcounter = 10 then 
+                    nxtState <= after_encrypt;
+             elsif  roundcounter < 11 then
                     nxtState <= round_till_nine;
                     roundcounter <= roundcounter + 1;
              else
@@ -97,17 +97,15 @@ FSM_nextstate : process (curState, clock )
              end if;
   
         when round_last =>
-            if rising_edge(clock) then 
+            
                 nxtState <= after_encrypt ;
                 roundcounter <= "1010";
-            else
-                  nxtState <= after_encrypt;
-            end if;
+           
             
       
       
       when after_encrypt =>
-          if rising_edge(clock) and ce = '0' then 
+          if  ce = '0' then 
               nxtState <=  idle;
           else
                 nxtState <= after_encrypt;
@@ -130,33 +128,33 @@ FSM_nextstate : process (curState, clock )
         
             
         when first_round =>
-                        roundcounter_out <= roundcounter;
+                    
                         done <= '0';
                         multiplex_state <= "01";    
             
         
         when round_till_nine =>
-            roundcounter_out <= roundcounter;
+           
             done <= '0';
             multiplex_state <= "10";
             
         when round_last =>
-                roundcounter_out <= roundcounter;
+             
                 done <= '0';
                 multiplex_state <= "11"; 
                 
         when after_encrypt => 
-                            roundcounter_out <= roundcounter;
+                            
                             done <= '1';
-                            multiplex_state <= "00";           
+                            multiplex_state <= "11";           
         
         when others =>
-             roundcounter_out <= roundcounter;
+         
              done <= '0';
              multiplex_state <= "00"; 
         
       end case;
     end process;
   
-  
+      roundcounter_out <= roundcounter;
   end Behavioral;

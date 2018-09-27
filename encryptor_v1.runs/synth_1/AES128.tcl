@@ -29,11 +29,15 @@ set_property target_language VHDL [current_project]
 set_property ip_output_repo c:/Users/11401165/OneDrive/Documenten/School/2018-2019/chipontwerp/encryptor_v1/encryptor_v1.cache/ip [current_project]
 set_property ip_cache_permissions {read write} [current_project]
 read_vhdl -library xil_defaultlib {
-  C:/Users/11401165/OneDrive/Documenten/School/2018-2019/chipontwerp/encryptor_v1/encryptor_v1.srcs/sources_1/new/AES128.vhd
-  C:/Users/11401165/OneDrive/Documenten/School/2018-2019/chipontwerp/encryptor_v1/encryptor_v1.srcs/sources_1/imports/Downloads/PKG_AES128.vhd
+  C:/Users/11401165/OneDrive/Documenten/School/2018-2019/chipontwerp/encryptor_v1/encryptor_v1.srcs/sources_1/new/Exor.vhd
+  C:/Users/11401165/OneDrive/Documenten/School/2018-2019/chipontwerp/encryptor_v1/encryptor_v1.srcs/sources_1/imports/Downloads/Keyscheduler.vhd
+  C:/Users/11401165/OneDrive/Documenten/School/2018-2019/chipontwerp/encryptor_v1/encryptor_v1.srcs/sources_1/imports/Downloads/bytesub.vhd
   C:/Users/11401165/OneDrive/Documenten/School/2018-2019/chipontwerp/encryptor_v1/encryptor_v1.srcs/sources_1/new/control_p.vhd
   C:/Users/11401165/OneDrive/Documenten/School/2018-2019/chipontwerp/encryptor_v1/encryptor_v1.srcs/sources_1/new/data_path.vhd
-  C:/Users/11401165/OneDrive/Documenten/School/2018-2019/chipontwerp/encryptor_v1/encryptor_v1.srcs/sources_1/imports/Downloads/AES128_tb.vhd
+  C:/Users/11401165/OneDrive/Documenten/School/2018-2019/chipontwerp/encryptor_v1/encryptor_v1.srcs/sources_1/imports/Downloads/mixcolumn.vhd
+  C:/Users/11401165/OneDrive/Documenten/School/2018-2019/chipontwerp/encryptor_v1/encryptor_v1.srcs/sources_1/new/round.vhd
+  C:/Users/11401165/OneDrive/Documenten/School/2018-2019/chipontwerp/encryptor_v1/encryptor_v1.srcs/sources_1/imports/Downloads/shiftrow.vhd
+  C:/Users/11401165/OneDrive/Documenten/School/2018-2019/chipontwerp/encryptor_v1/encryptor_v1.srcs/sources_1/new/AES128.vhd
 }
 # Mark all dcp files as not used in implementation to prevent them from being
 # stitched into the results of this synthesis run. Any black boxes in the
@@ -49,12 +53,12 @@ set_property used_in_implementation false [get_files C:/Users/11401165/OneDrive/
 set_param ips.enableIPCacheLiteLoad 0
 close [open __synthesis_is_running__ w]
 
-synth_design -top AES128_tb -part xc7k70tfbv676-1
+synth_design -top AES128 -part xc7k70tfbv676-1
 
 
 # disable binary constraint mode for synth run checkpoints
 set_param constraints.enableBinaryConstraints false
-write_checkpoint -force -noxdef AES128_tb.dcp
-create_report "synth_1_synth_report_utilization_0" "report_utilization -file AES128_tb_utilization_synth.rpt -pb AES128_tb_utilization_synth.pb"
+write_checkpoint -force -noxdef AES128.dcp
+create_report "synth_1_synth_report_utilization_0" "report_utilization -file AES128_utilization_synth.rpt -pb AES128_utilization_synth.pb"
 file delete __synthesis_is_running__
 close [open __synthesis_is_complete__ w]

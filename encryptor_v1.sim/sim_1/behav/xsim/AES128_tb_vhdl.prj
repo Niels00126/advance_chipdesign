@@ -1,0 +1,16 @@
+# compile vhdl design source files
+vhdl xil_defaultlib  \
+"../../../../encryptor_v1.srcs/sources_1/new/AES128.vhd" \
+"../../../../encryptor_v1.srcs/sources_1/imports/Downloads/PKG_AES128.vhd" \
+"../../../../encryptor_v1.srcs/sources_1/new/Exor.vhd" \
+"../../../../encryptor_v1.srcs/sources_1/imports/Downloads/Keyscheduler.vhd" \
+"../../../../encryptor_v1.srcs/sources_1/imports/Downloads/bytesub.vhd" \
+"../../../../encryptor_v1.srcs/sources_1/new/control_p.vhd" \
+"../../../../encryptor_v1.srcs/sources_1/new/data_path.vhd" \
+"../../../../encryptor_v1.srcs/sources_1/imports/Downloads/mixcolumn.vhd" \
+"../../../../encryptor_v1.srcs/sources_1/new/round.vhd" \
+"../../../../encryptor_v1.srcs/sources_1/imports/Downloads/shiftrow.vhd" \
+"../../../../encryptor_v1.srcs/sources_1/imports/Downloads/AES128_tb.vhd" \
+
+# Do not sort compile order
+nosort
