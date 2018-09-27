@@ -72,7 +72,7 @@ FSM_nextstate : process (curState )
   case curState is
      
         when idle =>
-            roundcounter  <= "0000";
+            roundcounter  <= (others => '0');
              if (ce = '1') then
             nxtState <= first_round;
             end if;
